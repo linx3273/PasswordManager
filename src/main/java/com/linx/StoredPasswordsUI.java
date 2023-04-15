@@ -1,14 +1,14 @@
 package com.linx;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class StoredPasswordsUI extends JFrame{
     private JTextField searchField;
-    private JList<PasswordDataClass> passwordList;
+    private JList<PasswordDataClass> listView;
     private JButton deleteButton;
     private JButton saveButton;
     private JButton generateButton;
@@ -20,7 +20,7 @@ public class StoredPasswordsUI extends JFrame{
     private static final DatabaseHandler databaseHandler = new DatabaseHandler();
 
     public StoredPasswordsUI(){
-        updateList();
+        generateListView();
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -35,19 +35,48 @@ public class StoredPasswordsUI extends JFrame{
 
                 databaseHandler.addEntry(passwordDataClass);
 
-                updateList();
+                generateListView();
+            }
+        });
+        listView.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+
+                PasswordDataClass selected = listView.getSelectedValue();
+
+                for (PasswordDataClass entry: databaseHandler.fetchAll()){
+                    if (selected.equals(entry)){
+                        descriptionField.setText(selected.getDescription());
+                        usernameField.setText(selected.getUsername());
+                        passwordField.setText(selected.getPassword());
+                    }
+                }
+            }
+        });
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    PasswordDataClass selected = listView.getSelectedValue();
+                    databaseHandler.deleteEntry(selected);
+
+                    generateListView();
+                }catch(Exception exception){
+                    JOptionPane.showMessageDialog(null, "Please select an item");
+                }
             }
         });
     }
 
-    public void updateList(){
+    public void generateListView(){
         DefaultListModel<PasswordDataClass> defaultListModel = new DefaultListModel<PasswordDataClass>();
 
         for (PasswordDataClass entry: databaseHandler.fetchAll()){
             defaultListModel.addElement(entry);
         }
 
-        passwordList.setModel(defaultListModel);
+        listView.setModel(defaultListModel);
     }
 
 
