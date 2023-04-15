@@ -16,11 +16,13 @@ public class StoredPasswordsUI extends JFrame{
     private JTextField usernameField;
     private JTextField passwordField;
     private JPanel viewPanel;
+    private JButton deselectButton;
 
     private static final DatabaseHandler databaseHandler = new DatabaseHandler();
 
     public StoredPasswordsUI(){
         generateListView();
+
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -38,6 +40,7 @@ public class StoredPasswordsUI extends JFrame{
                 generateListView();
             }
         });
+
         listView.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -54,6 +57,7 @@ public class StoredPasswordsUI extends JFrame{
                 }
             }
         });
+
         deleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -65,6 +69,16 @@ public class StoredPasswordsUI extends JFrame{
                 }catch(Exception exception){
                     JOptionPane.showMessageDialog(null, "Please select an item");
                 }
+            }
+        });
+
+        deselectButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                listView.clearSelection();
+                descriptionField.setText("");
+                usernameField.setText("");
+                passwordField.setText("");
             }
         });
     }
@@ -79,12 +93,7 @@ public class StoredPasswordsUI extends JFrame{
         listView.setModel(defaultListModel);
     }
 
-
-
-
     public JPanel getViewPanel(){
         return viewPanel;
     }
-
 }
-
