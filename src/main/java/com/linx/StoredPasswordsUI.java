@@ -1,10 +1,7 @@
 package com.linx;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 
 public class StoredPasswordsUI extends JFrame{
     private JTextField searchField;
@@ -30,13 +27,28 @@ public class StoredPasswordsUI extends JFrame{
                 String username = usernameField.getText();
                 String password = passwordField.getText();
 
-                PasswordDataClass passwordDataClass = new PasswordDataClass();
-                passwordDataClass.setDescription(description);
-                passwordDataClass.setUsername(username);
-                passwordDataClass.setPassword(password);
+                if(listView.isSelectionEmpty()) {
+                    PasswordDataClass passwordDataClass = new PasswordDataClass();
+                    passwordDataClass.setDescription(description);
+                    passwordDataClass.setUsername(username);
+                    passwordDataClass.setPassword(password);
 
-                databaseHandler.addEntry(passwordDataClass);
+                    databaseHandler.addEntry(passwordDataClass);
+                }
+                else {
+                    PasswordDataClass update = listView.getSelectedValue();
 
+                    update.setDescription(description);
+                    update.setUsername(username);
+                    update.setPassword(password);
+
+                    databaseHandler.updateEntry(update);
+
+                }
+
+                descriptionField.setText("");
+                usernameField.setText("");
+                passwordField.setText("");
                 generateListView();
             }
         });
@@ -65,6 +77,10 @@ public class StoredPasswordsUI extends JFrame{
                     PasswordDataClass selected = listView.getSelectedValue();
                     databaseHandler.deleteEntry(selected);
 
+                    descriptionField.setText("");
+                    usernameField.setText("");
+                    passwordField.setText("");
+
                     generateListView();
                 }catch(Exception exception){
                     JOptionPane.showMessageDialog(null, "Please select an item");
@@ -79,6 +95,20 @@ public class StoredPasswordsUI extends JFrame{
                 descriptionField.setText("");
                 usernameField.setText("");
                 passwordField.setText("");
+            }
+        });
+        searchField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                super.keyReleased(e);
+                DefaultListModel<PasswordDataClass> defaultListModel = new DefaultListModel<PasswordDataClass>();
+
+                for (PasswordDataClass entry: databaseHandler.fetchAll()){
+                    if (entry.getDescription().toLowerCase().contains(searchField.getText().toLowerCase())){
+                        defaultListModel.addElement(entry);
+                    }
+                }
+                listView.setModel(defaultListModel);
             }
         });
     }
