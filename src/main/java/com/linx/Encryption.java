@@ -10,6 +10,11 @@ public class Encryption {
         MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
         byte[] hash = messageDigest.digest(str.getBytes(StandardCharsets.UTF_8));
 
-        return Base64.getEncoder().encodeToString(hash);
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (byte b: hash){
+            stringBuilder.append(String.format("%02x", b));
+        }
+        return stringBuilder.toString();
     }
 }
