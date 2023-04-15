@@ -1,4 +1,4 @@
-package com.linx;
+package com.linx.PasswordStorer;
 import java.util.Random;
 
 public class PasswordGenerator {

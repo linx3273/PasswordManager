@@ -1,4 +1,4 @@
-package com.linx;
+package com.linx.PasswordStorer;
 
 import org.bson.types.ObjectId;
 

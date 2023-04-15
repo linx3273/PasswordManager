@@ -1,4 +1,6 @@
-package com.linx;
+package com.linx.PasswordStorer;
+
+import com.linx.DatabaseHandler;
 
 import javax.swing.*;
 import java.awt.event.*;

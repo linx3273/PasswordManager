@@ -1,5 +1,7 @@
 package com.linx;
 
+import com.linx.PasswordStorer.StoredPasswordsUI;
+
 import javax.swing.*;
 
 public class Main {
