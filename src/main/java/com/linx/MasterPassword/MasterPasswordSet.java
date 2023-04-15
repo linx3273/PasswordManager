@@ -17,6 +17,10 @@ public class MasterPasswordSet extends JFrame {
     private boolean flag = false;
 
     private MasterPasswordSet() {
+        /**
+         * event listener for the submit button
+         * called when the button gets clicked
+         */
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -25,11 +29,14 @@ public class MasterPasswordSet extends JFrame {
 
                 try {
                     if (enterPwd.equals(confPwd)) {
+                        // password matches confirm password
                         databaseHandler.createMasterPassword(enterPwd);
 
                         // TODO
 
                     } else {
+                        // password does not match confirm password
+                        // inform user and clear text fields
                         JOptionPane.showMessageDialog(null, "Passwords do not match");
                         enterPassword.setText("");
                         confirmPassword.setText("");

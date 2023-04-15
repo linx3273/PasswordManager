@@ -18,14 +18,20 @@ public class MasterPasswordCheck extends JFrame{
     private static final DatabaseHandler databaseHandler = new DatabaseHandler();
 
     private MasterPasswordCheck() {
+        /**
+         * event listener for submit button
+         * called when the button gets clicked
+         */
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     if (databaseHandler.checkMasterPassword(String.valueOf(enterPassword.getPassword()))){
+                        // if password matches the stored password
 
                         // TODO
 
+                        // close the window upon clicking the submit button
                         Window window = SwingUtilities.getWindowAncestor(submitButton);
                         if (window instanceof JDialog){
                             JDialog dialog = (JDialog) window;
@@ -33,6 +39,8 @@ public class MasterPasswordCheck extends JFrame{
                         }
                     }
                     else{
+                        // password does not match the stored password
+                        // inform user and clear text fields
                         JOptionPane.showMessageDialog(null, "Invalid password");
                         enterPassword.setText("");
 

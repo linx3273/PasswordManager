@@ -4,6 +4,15 @@ import org.bson.types.ObjectId;
 
 import java.util.Objects;
 
+/**
+ *  A dataclass that is used to represent the entries stored in the database collection (saved) as objects
+ *  Contains:
+ *      AllArgsConstructor
+ *      NoArgsConstructor
+ *      GettersAndSetters
+ *      EqualsAndHashCode for ID
+ *      toString
+ */
 public class PasswordDataClass {
     private ObjectId id;
     private String description;
@@ -65,6 +74,10 @@ public class PasswordDataClass {
         this.password = password;
     }
 
+    /**
+     * Used by JFrame's JList to display the description value of the object in the list view
+     * @return Returns the description value
+     */
     @Override
     public String toString(){
         return description;
