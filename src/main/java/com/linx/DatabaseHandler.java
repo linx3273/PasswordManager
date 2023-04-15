@@ -12,41 +12,41 @@ import org.bson.types.ObjectId;
 import java.util.ArrayList;
 
 public class DatabaseHandler {
-    final private static MongoClient mongoClient = new MongoClient("localhost", 27017);
-    final private static MongoDatabase mongoDatabase = mongoClient.getDatabase("password_manager");
-    final private static MongoCollection<Document> mongoCollection = mongoDatabase.getCollection("password_manager");
+     private static final MongoClient mongoClient = new MongoClient("localhost", 27017);
+     private static final MongoDatabase mongoDatabase = mongoClient.getDatabase("password_manager");
+     private static final MongoCollection<Document> mongoCollection = mongoDatabase.getCollection("password_manager");
 
-    public void addEntry(SavedPasswordDataClass savedPasswordDataClass){
 
+    public void addEntry(PasswordDataClass passwordDataClass){
         Document document = new Document();
-        document.append("Description", savedPasswordDataClass.getDescription());
-        document.append("Username", savedPasswordDataClass.getUsername());
-        document.append("Password", savedPasswordDataClass.getPassword());
+        document.append("Description", passwordDataClass.getDescription());
+        document.append("Username", passwordDataClass.getUsername());
+        document.append("Password", passwordDataClass.getPassword());
         mongoCollection.insertOne(document);
     }
 
-    public void deleteEntry(SavedPasswordDataClass savedPasswordDataClass){
+    public void deleteEntry(PasswordDataClass passwordDataClass){
         mongoCollection.deleteOne(
-                Filters.eq("_id", savedPasswordDataClass.getId())
+                Filters.eq("_id", passwordDataClass.getId())
         );
     }
 
-    public void updateEntry(SavedPasswordDataClass savedPasswordDataClass){
+    public void updateEntry(PasswordDataClass passwordDataClass){
         mongoCollection.updateOne(
-                Filters.eq("_id", savedPasswordDataClass.getId()),
+                Filters.eq("_id", passwordDataClass.getId()),
                 Updates.combine(
-                        Updates.set("Username", savedPasswordDataClass.getUsername()),
-                        Updates.set("Password", savedPasswordDataClass.getPassword())
+                        Updates.set("Username", passwordDataClass.getUsername()),
+                        Updates.set("Password", passwordDataClass.getPassword())
                 )
         );
     }
 
-    public ArrayList<SavedPasswordDataClass> findAll(){
-        ArrayList<SavedPasswordDataClass> savedPasswords = new ArrayList<SavedPasswordDataClass>();
+    public ArrayList<PasswordDataClass> fetchAll(){
+        ArrayList<PasswordDataClass> savedPasswords = new ArrayList<PasswordDataClass>();
         FindIterable<Document> iterable = mongoCollection.find();
 
         for (Document entry: iterable){
-            SavedPasswordDataClass passwordEntry = new SavedPasswordDataClass(
+            PasswordDataClass passwordEntry = new PasswordDataClass(
                     (ObjectId) entry.get("_id"),
                     (String) entry.get("Description"),
                     (String) entry.get("Username"),

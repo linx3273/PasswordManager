@@ -4,27 +4,27 @@ import org.bson.types.ObjectId;
 
 import java.util.Objects;
 
-public class SavedPasswordDataClass {
+public class PasswordDataClass {
     private ObjectId id;
     private String description;
     private String username;
     private String password;
 
-    public SavedPasswordDataClass(ObjectId id, String description, String username, String password) {
+    public PasswordDataClass(ObjectId id, String description, String username, String password) {
         this.id = id;
         this.description = description;
         this.username = username;
         this.password = password;
     }
 
-    public SavedPasswordDataClass() {
+    public PasswordDataClass() {
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        SavedPasswordDataClass that = (SavedPasswordDataClass) o;
+        PasswordDataClass that = (PasswordDataClass) o;
         return Objects.equals(id, that.id);
     }
 
@@ -63,5 +63,10 @@ public class SavedPasswordDataClass {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public String toString(){
+        return description;
     }
 }
