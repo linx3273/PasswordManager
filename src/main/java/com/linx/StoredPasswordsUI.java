@@ -111,6 +111,14 @@ public class StoredPasswordsUI extends JFrame{
                 listView.setModel(defaultListModel);
             }
         });
+        generateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                passwordField.setText(
+                        new PasswordGenerator().generateRandomString()
+                );
+            }
+        });
     }
 
     public void generateListView(){
