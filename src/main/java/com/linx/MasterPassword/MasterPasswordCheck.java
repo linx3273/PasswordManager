@@ -60,7 +60,7 @@ public class MasterPasswordCheck extends JFrame{
 
     public static boolean masterPasswordChecker(){
         MasterPasswordCheck masterPasswordCheck = new MasterPasswordCheck();
-        JDialog dialog = new JDialog(masterPasswordCheck, "Title", true); // create a modal dialog
+        JDialog dialog = new JDialog(masterPasswordCheck, "Password Manager", true); // create a modal dialog
         dialog.setContentPane(masterPasswordCheck.getCheckerPanel());
         dialog.setSize(200, 120);
         dialog.setResizable(false);

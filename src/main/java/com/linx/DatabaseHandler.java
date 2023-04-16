@@ -10,6 +10,11 @@ import com.mongodb.client.model.Updates;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
@@ -18,6 +23,7 @@ public class DatabaseHandler {
      private static final MongoDatabase mongoDatabase = mongoClient.getDatabase("password_manager");
      private static final MongoCollection<Document> mongoCollection = mongoDatabase.getCollection("saved");
      private static final MongoCollection<Document> masterMongoCollection = mongoDatabase.getCollection("master");
+     private static final Encryption encryption = new Encryption();
 
     /**
      * Writes an entry to the database collection by generating a document of the passwordDataClass
@@ -28,7 +34,17 @@ public class DatabaseHandler {
         Document document = new Document();
         document.append("Description", passwordDataClass.getDescription());
         document.append("Username", passwordDataClass.getUsername());
-        document.append("Password", passwordDataClass.getPassword());
+
+        try {
+            document.append(
+                    "Password",
+                    encryption.encrypt_AES256(passwordDataClass.getPassword())
+            );
+        } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidAlgorithmParameterException |
+                 InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+            throw new RuntimeException(e);
+        }
+
         mongoCollection.insertOne(document);
     }
 
@@ -50,13 +66,22 @@ public class DatabaseHandler {
      * @param passwordDataClass Representation of the mongodb data
      */
     public void updateEntry(PasswordDataClass passwordDataClass){
-        mongoCollection.updateOne(
-                Filters.eq("_id", passwordDataClass.getId()),
-                Updates.combine(
-                        Updates.set("Username", passwordDataClass.getUsername()),
-                        Updates.set("Password", passwordDataClass.getPassword())
-                )
-        );
+        try {
+            mongoCollection.updateOne(
+                    Filters.eq("_id", passwordDataClass.getId()),
+                    Updates.combine(
+                            Updates.set("Description", passwordDataClass.getDescription()),
+                            Updates.set("Username", passwordDataClass.getUsername()),
+                            Updates.set(
+                                    "Password",
+                                    encryption.encrypt_AES256(passwordDataClass.getPassword())
+                            )
+                    )
+            );
+        } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidAlgorithmParameterException |
+                 InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -68,12 +93,21 @@ public class DatabaseHandler {
         FindIterable<Document> iterable = mongoCollection.find();
 
         for (Document entry: iterable){
-            PasswordDataClass passwordEntry = new PasswordDataClass(
-                    (ObjectId) entry.get("_id"),
-                    (String) entry.get("Description"),
-                    (String) entry.get("Username"),
-                    (String) entry.get("Password")
-            );
+            PasswordDataClass passwordEntry;
+            try {
+                passwordEntry = new PasswordDataClass(
+                        (ObjectId) entry.get("_id"),
+                        (String) entry.get("Description"),
+                        (String) entry.get("Username"),
+                        encryption.decrypt_AES256(
+                                (String) entry.get("Password")
+                        )
+
+                );
+            } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidAlgorithmParameterException |
+                     InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+                throw new RuntimeException(e);
+            }
             savedPasswords.add(passwordEntry);
         }
         return savedPasswords;
@@ -85,7 +119,7 @@ public class DatabaseHandler {
      * @throws NoSuchAlgorithmException  y
      */
     public void createMasterPassword(String password) throws NoSuchAlgorithmException {
-        String pass_enc = new Encryption().encrypt(password);
+        String pass_enc = encryption.encrypt_SHA256(password);
 
         Document document = new Document("password", pass_enc);
         masterMongoCollection.insertOne(document);
@@ -98,7 +132,7 @@ public class DatabaseHandler {
      * @throws NoSuchAlgorithmException In case the SHA256 algorithm does not exist
      */
     public boolean checkMasterPassword(String password) throws NoSuchAlgorithmException {
-        String pass_enc = new Encryption().encrypt(password);
+        String pass_enc = encryption.encrypt_SHA256(password);
 
         FindIterable<Document> iterable = masterMongoCollection.find();
         String key = "";
