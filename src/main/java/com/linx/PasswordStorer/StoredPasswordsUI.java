@@ -27,41 +27,38 @@ public class StoredPasswordsUI extends JFrame{
          * event listener for save button
          * called when the button is clicked
          */
-        saveButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // get string values input into the text boxes
-                String description = descriptionField.getText();
-                String username = usernameField.getText();
-                String password = passwordField.getText();
+        saveButton.addActionListener(e -> {
+            // get string values input into the text boxes
+            String description = descriptionField.getText();
+            String username = usernameField.getText();
+            String password = passwordField.getText();
 
-                if(listView.isSelectionEmpty()) {
-                    // if no element has been selected in the list consider this as a new entry
-                    PasswordDataClass passwordDataClass = new PasswordDataClass();
-                    passwordDataClass.setDescription(description);
-                    passwordDataClass.setUsername(username);
-                    passwordDataClass.setPassword(password);
+            if(listView.isSelectionEmpty()) {
+                // if no element has been selected in the list consider this as a new entry
+                PasswordDataClass passwordDataClass = new PasswordDataClass();
+                passwordDataClass.setDescription(description);
+                passwordDataClass.setUsername(username);
+                passwordDataClass.setPassword(password);
 
-                    databaseHandler.addEntry(passwordDataClass);
-                }
-                else {
-                    // list element is selected so update the value in the database
-                    PasswordDataClass update = listView.getSelectedValue();
-
-                    update.setDescription(description);
-                    update.setUsername(username);
-                    update.setPassword(password);
-
-                    databaseHandler.updateEntry(update);
-
-                }
-
-                // on successful update clear the text fields and refresh the list again to get updated values
-                descriptionField.setText("");
-                usernameField.setText("");
-                passwordField.setText("");
-                generateListView();
+                databaseHandler.addEntry(passwordDataClass);
             }
+            else {
+                // list element is selected so update the value in the database
+                PasswordDataClass update = listView.getSelectedValue();
+
+                update.setDescription(description);
+                update.setUsername(username);
+                update.setPassword(password);
+
+                databaseHandler.updateEntry(update);
+
+            }
+
+            // on successful update clear the text fields and refresh the list again to get updated values
+            descriptionField.setText("");
+            usernameField.setText("");
+            passwordField.setText("");
+            generateListView();
         });
 
         /**
@@ -92,23 +89,20 @@ public class StoredPasswordsUI extends JFrame{
          * event listener for delete button
          * called when the button is clicked
          */
-        deleteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    // get the object matching to the selected entry
-                    // and delete the entry matching with this object
-                    PasswordDataClass selected = listView.getSelectedValue();
-                    databaseHandler.deleteEntry(selected);
+        deleteButton.addActionListener(e -> {
+            try {
+                // get the object matching to the selected entry
+                // and delete the entry matching with this object
+                PasswordDataClass selected = listView.getSelectedValue();
+                databaseHandler.deleteEntry(selected);
 
-                    // after deletion set clear the text fields and regenerate the list view to match the updates
-                    descriptionField.setText("");
-                    usernameField.setText("");
-                    passwordField.setText("");
-                    generateListView();
-                }catch(Exception exception){
-                    JOptionPane.showMessageDialog(null, "Please select an item");
-                }
+                // after deletion set clear the text fields and regenerate the list view to match the updates
+                descriptionField.setText("");
+                usernameField.setText("");
+                passwordField.setText("");
+                generateListView();
+            }catch(Exception exception){
+                JOptionPane.showMessageDialog(null, "Please select an item");
             }
         });
 
@@ -116,15 +110,12 @@ public class StoredPasswordsUI extends JFrame{
          * event listener for the deselect button.
          * called when the button is clicked
          */
-        deselectButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // deselect any selected list item and clear the text boxes
-                listView.clearSelection();
-                descriptionField.setText("");
-                usernameField.setText("");
-                passwordField.setText("");
-            }
+        deselectButton.addActionListener(e -> {
+            // deselect any selected list item and clear the text boxes
+            listView.clearSelection();
+            descriptionField.setText("");
+            usernameField.setText("");
+            passwordField.setText("");
         });
 
         /**
@@ -138,7 +129,7 @@ public class StoredPasswordsUI extends JFrame{
                 // similar to the generateListView() method except in this case it is filtered
                 // using the user provided text
 
-                DefaultListModel<PasswordDataClass> defaultListModel = new DefaultListModel<PasswordDataClass>();
+                DefaultListModel<PasswordDataClass> defaultListModel = new DefaultListModel<>();
 
                 for (PasswordDataClass entry: databaseHandler.fetchAll()){
                     if (entry.getDescription().toLowerCase().contains(searchField.getText().toLowerCase())){
@@ -153,14 +144,11 @@ public class StoredPasswordsUI extends JFrame{
          * event listener for generate button
          * called when the button gets clicked
          */
-        generateButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // calls the PasswordGenerator which returns a randomly generated string and applies it to the passwordField
-                passwordField.setText(
-                        new PasswordGenerator().generateRandomString()
-                );
-            }
+        generateButton.addActionListener(e -> {
+            // calls the PasswordGenerator which returns a randomly generated string and applies it to the passwordField
+            passwordField.setText(
+                    new PasswordGenerator().generateRandomString()
+            );
         });
     }
 
@@ -168,7 +156,7 @@ public class StoredPasswordsUI extends JFrame{
      * Obtains an ArrayList of password entries from the database and attaches it to the jlist view
      */
     public void generateListView(){
-        DefaultListModel<PasswordDataClass> defaultListModel = new DefaultListModel<PasswordDataClass>();
+        DefaultListModel<PasswordDataClass> defaultListModel = new DefaultListModel<>();
 
         for (PasswordDataClass entry: databaseHandler.fetchAll()){
             defaultListModel.addElement(entry);

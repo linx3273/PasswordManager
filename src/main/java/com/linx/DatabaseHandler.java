@@ -1,7 +1,6 @@
 package com.linx;
 
 import com.linx.PasswordStorer.PasswordDataClass;
-import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
@@ -65,7 +64,7 @@ public class DatabaseHandler {
      * @return Arraylist of the list of stored passwords in the database collection (saved)
      */
     public ArrayList<PasswordDataClass> fetchAll(){
-        ArrayList<PasswordDataClass> savedPasswords = new ArrayList<PasswordDataClass>();
+        ArrayList<PasswordDataClass> savedPasswords = new ArrayList<>();
         FindIterable<Document> iterable = mongoCollection.find();
 
         for (Document entry: iterable){
@@ -83,7 +82,7 @@ public class DatabaseHandler {
     /**
      * Creates an entry in the collection (master) for the master password used for the application
      * @param password  The password entered by the user for creation
-     * @throws NoSuchAlgorithmException  In case the SHA256 algorithm does not exist
+     * @throws NoSuchAlgorithmException  y
      */
     public void createMasterPassword(String password) throws NoSuchAlgorithmException {
         String pass_enc = new Encryption().encrypt(password);
@@ -108,9 +107,6 @@ public class DatabaseHandler {
             key = (String) entry.get("password");
         }
 
-        if (pass_enc.equals(key)){
-            return true;
-        }
-        return false;
+        return pass_enc.equals(key);
     }
 }
