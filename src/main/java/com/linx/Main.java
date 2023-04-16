@@ -16,34 +16,34 @@ public class Main {
             if (MasterPasswordSet.masterPasswordSetter()) {
                 // master password has been created successfully
                 // prompt user to login using master password
-                if (MasterPasswordCheck.masterPasswordChecker()) {
-                    // user has authenticated correctly
-                    // display the password manager window
-                    StoredPasswordsUI storedPasswordsUI = new StoredPasswordsUI();
-                    storedPasswordsUI.setContentPane(storedPasswordsUI.getViewPanel());
-                    storedPasswordsUI.setTitle("Password Manager");
-                    storedPasswordsUI.setSize(600, 400);
-                    storedPasswordsUI.setVisible(true);
-                    storedPasswordsUI.setResizable(false);
-                    storedPasswordsUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                }
+                passwordStorageAuth();
             }
         } else {
             // master password already exists
             // prompt user to authenticate
-            if (MasterPasswordCheck.masterPasswordChecker()) {
-                // user has authenticated correctly
-                // display the password manager window
-                StoredPasswordsUI storedPasswordsUI = new StoredPasswordsUI();
-                storedPasswordsUI.setContentPane(storedPasswordsUI.getViewPanel());
-                storedPasswordsUI.setTitle("Password Manager");
-                storedPasswordsUI.setSize(600, 400);
-                storedPasswordsUI.setVisible(true);
-                storedPasswordsUI.setResizable(false);
-                storedPasswordsUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            }
+            passwordStorageAuth();
 
         }
         System.exit(0);
+    }
+
+    private static void passwordStorageAuth() {
+        if (MasterPasswordCheck.masterPasswordChecker()) {
+            // user has authenticated correctly
+            // display the password manager window
+            StoredPasswordsUI storedPasswordsUI = new StoredPasswordsUI();
+//            storedPasswordsUI.setContentPane(storedPasswordsUI.getViewPanel());
+//            storedPasswordsUI.setTitle("Password Manager");
+//            storedPasswordsUI.setSize(600, 400);
+//            storedPasswordsUI.setVisible(true);
+//            storedPasswordsUI.setResizable(false);
+//            storedPasswordsUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            JDialog dialog = new JDialog(storedPasswordsUI, "Password Manager", true);
+            dialog.setContentPane(storedPasswordsUI.getViewPanel());
+            dialog.setSize(600, 400);
+            dialog.setVisible(true);
+            dialog.setResizable(false);
+            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        }
     }
 }
