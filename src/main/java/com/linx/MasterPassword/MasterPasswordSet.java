@@ -3,6 +3,7 @@ package com.linx.MasterPassword;
 import com.linx.DatabaseHandler;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.security.NoSuchAlgorithmException;
@@ -33,6 +34,13 @@ public class MasterPasswordSet extends JFrame {
                         databaseHandler.createMasterPassword(enterPwd);
 
                         // TODO
+                        flag=true;
+
+                        Window window = SwingUtilities.getWindowAncestor(submitButton);
+                        if (window instanceof JDialog){
+                            JDialog dialog = (JDialog) window;
+                            dialog.dispose();
+                        }
 
                     } else {
                         // password does not match confirm password
@@ -48,7 +56,11 @@ public class MasterPasswordSet extends JFrame {
         });
     }
 
-    public boolean masterPasswordSetter(){
+    public boolean getFlag(){
+        return flag;
+    }
+
+    public static boolean masterPasswordSetter(){
         MasterPasswordSet masterPasswordSet = new MasterPasswordSet();
         JDialog dialog = new JDialog(masterPasswordSet, "Master Password", true); // create a modal dialog
         dialog.setContentPane(masterPasswordSet.getSetterPanel());
@@ -57,22 +69,10 @@ public class MasterPasswordSet extends JFrame {
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         dialog.setVisible(true);
 
-        return flag;
+        return masterPasswordSet.getFlag();
     }
 
     public JPanel getSetterPanel(){
         return setterPanel;
     }
-
-//    public static void main(String[] args){
-//        MasterPasswordSet masterPasswordSet = new MasterPasswordSet();
-//        boolean flag = masterPasswordSet.masterPasswordSetter();
-//
-//        System.out.println(flag);
-//
-//        if (! flag){
-//            System.exit(0);
-//        }
-//
-//    }
 }

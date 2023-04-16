@@ -109,4 +109,12 @@ public class DatabaseHandler {
 
         return pass_enc.equals(key);
     }
+
+    /**
+     *  Checks if master password has been created
+     * @return returns boolean true if the masterMongoCollection holds the master password
+     */
+    public boolean masterPasswordExists(){
+        return masterMongoCollection.countDocuments() == 1;
+    }
 }

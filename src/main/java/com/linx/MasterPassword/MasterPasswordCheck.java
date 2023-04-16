@@ -30,6 +30,7 @@ public class MasterPasswordCheck extends JFrame{
                         // if password matches the stored password
 
                         // TODO
+                        flag = true;
 
                         // close the window upon clicking the submit button
                         Window window = SwingUtilities.getWindowAncestor(submitButton);
@@ -52,8 +53,12 @@ public class MasterPasswordCheck extends JFrame{
         });
     }
 
+    public boolean getFlag(){
+        return flag;
+    }
 
-    public boolean masterPasswordChecker(){
+
+    public static boolean masterPasswordChecker(){
         MasterPasswordCheck masterPasswordCheck = new MasterPasswordCheck();
         JDialog dialog = new JDialog(masterPasswordCheck, "Title", true); // create a modal dialog
         dialog.setContentPane(masterPasswordCheck.getCheckerPanel());
@@ -62,22 +67,10 @@ public class MasterPasswordCheck extends JFrame{
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE); // exit the dialog on close
         dialog.setVisible(true); // show the dialog
 
-        return flag;
+        return masterPasswordCheck.getFlag();
     }
 
     public JPanel getCheckerPanel(){
         return checkerPanel;
     }
-
-//    public static void main(String[] args){
-//        MasterPasswordCheck masterPasswordCheck = new MasterPasswordCheck();
-//        boolean flag = masterPasswordCheck.masterPasswordChecker();
-//        System.out.println(flag);
-//
-//        if (! flag){
-//            System.exit(0);
-//        }
-//
-//    }
-
 }
